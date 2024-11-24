@@ -1,0 +1,219 @@
+@use "sass:map";
+
+$breakpoint-tablet: 800px;
+$breakpoint-phone: 640px;
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap");
+
+$typography-map:(
+        "title-medium":(
+                "line-height": 24px,
+                "size": 24px,
+                "tracking": 0.15px,
+                "weight": 500
+        ),
+        "body-large":(
+                "line-height": 24px,
+                "size": 14px,
+                "tracking": 0.5px,
+                "weight": 500
+        ),
+        "body-medium":(
+                "line-height": 20px,
+                "size": 14px,
+                "tracking": 0.25px,
+                "weight": 400
+        ),
+);
+
+@mixin apply-font($font-style){
+  $font-map: map.get($typography-map, $font-style);
+
+  line-height: map.get($font-map, "line-height");
+  font-size: map.get($font-map, "size");
+  letter-spacing: map.get($font-map, "tracking");
+  font-weight: map.get($font-map, "weight");
+}
+
+@mixin typography-title-medium{
+  @include apply-font("title-medium");
+}
+
+@mixin typography-body-large{
+  @include apply-font("body-large");
+}
+
+@mixin typography-body-medium{
+  @include apply-font("body-medium");
+}
+
+:root{
+  color-scheme: light dark;
+
+  //light theme colors
+  --md-sys-color-background-light: rgb(248 249 255);
+  --md-sys-color-on-background-light: rgb(25 28 32);
+  --md-sys-color-surface-container-light: rgb(236 238 244);
+  --md-sys-color-on-surface-light: rgb(25 28 32);
+  --md-sys-color-on-surface-variant-light: rgb(67 71 78);
+
+  //dark theme colors
+  --md-sys-color-background-dark: rgb(17 20 24);
+  --md-sys-color-on-background-dark: rgb(225 226 232);
+  --md-sys-color-surface-container-dark: rgb(29 32 36);
+  --md-sys-color-on-surface-dark: rgb(225 226 232);
+  --md-sys-color-on-surface-variant-dark: rgb(195 198 207);
+
+  //theme colors
+  --md-sys-color-background: light-dark(var(--md-sys-color-background-light), var(--md-sys-color-background-dark));
+  --md-sys-color-on-background: light-dark(var(--md-sys-color-on-background-light), var(--md-sys-color-on-background-dark));
+  --md-sys-color-surface-container: light-dark(var(--md-sys-color-surface-container-light), var(--md-sys-color-surface-container-dark));
+  --md-sys-color-on-surface: light-dark(var(--md-sys-color-on-surface-light), var(---md-sys-color-on-surface-dark));
+  --md-sys-color-on-surface-variant: light-dark(var(--md-sys-color-on-surface-variant-light), var(--md-sys-color-on-surface-variant-dark));
+
+  //common variables
+  --main-gap: 20px;
+  --main-border-radius: 12px;
+  --main-font: "Roboto", sans-serif;
+}
+
+html, body{
+  margin: 0;
+  height: 100dvh;
+}
+
+body{
+  font-family: var(--main-font);
+  // margin: 0;
+  // padding: 0;
+  display: grid;
+  place-items: center;
+
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+}
+
+.container{
+  display: grid;
+  grid-auto-flow: row dense;
+  //place-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 1024px;
+  gap: var(--main-gap); //сделать общий гэп
+
+  @media(width < #{$breakpoint-tablet}){
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    //grid-template-rows: repeat(3, 1fr);
+  }
+
+  @media(width < #{$breakpoint-phone}){
+    width: 100%;
+    //padding: 10px;
+    //overflow: hidden;
+    grid-template-columns: 1fr;
+
+    .card{
+      &--vertically{
+        grid-row: span 3;
+      }
+
+      &--horizontally{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr ;
+        grid-column: span 1;
+      }
+    }
+    //grid-template-rows: repeat(6, 1fr);
+    //grid-column: span 2;
+    //grid-template-rows: 1fr;
+    //grid-template-rows: repeat(3, 1fr);
+  }
+
+}
+
+.card{
+  display: grid;
+  background-color: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  border-radius: var(--main-border-radius); //занести в общую переменную
+  --_state-layer-display: none;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  padding: 10px 0 10px 0;
+  // overflow: hidden;
+  // object-fit: cover;
+  // max-width: 400px;
+  // max-height: 200px;
+
+  &__image{
+    //max-width: 300px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    overflow: hidden;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    border-radius: var(--main-border-radius); //занести в общую переменную
+  }
+
+  &:hover{
+    --_state-layer-display: block;
+  }
+
+  &::after{
+    display: var(--_state-layer-display);
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0.08;
+    z-index: -1;
+    border-radius: var(--main-border-radius); //занести в общую переменную
+  }
+
+  &--vertically {
+    gap: var(--main-gap); //сделать общий гэп
+    grid-template-rows: 1fr 1fr;
+    //grid-template-rows: subgrid;
+    grid-row: span 2;
+    padding: 0;
+  }
+
+  &__content{
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &__title{
+      @include typography-title-medium;
+    }
+
+    &__subtitle{
+      @include typography-body-large;
+    }
+
+    &__text{
+      @include typography-body-medium;
+
+      color: var(--md-sys-color-on-surface-variant);
+    }
+  }
+
+  &--horizontally {
+    gap: var(--main-gap); //сделать общий гэп
+    grid-template-columns: 1fr 1fr;
+    //grid-template-rows: subgrid;
+    grid-column: span 2;
+    padding: 0;
+
+    //   @media (width < #{$breakpoint-phone}) {
+    //   grid-template-columns: 1fr;
+    //   grid-template-rows: 1fr min-content;
+    //   grid-column: span 1;
+    // }
+  }
+}
